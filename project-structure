@@ -1,0 +1,35 @@
+comedy-agents/
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   │   ├── __init__.py
+│   │   │   ├── agents.py
+│   │   │   └── sessions.py
+│   │   ├── core/
+│   │   │   ├── __init__.py
+│   │   │   └── config.py
+│   │   ├── models/
+│   │   │   ├── __init__.py
+│   │   │   └── schemas.py
+│   │   ├── services/
+│   │   │   ├── __init__.py
+│   │   │   └── agent_service.py
+│   │   └── main.py
+│   ├── tests/
+│   ├── .env.example
+│   ├── requirements.txt
+│   └── pyproject.toml
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── hooks/
+│   │   ├── pages/
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── types/
+│   │   ├── utils/
+│   │   └── App.tsx
+│   ├── package.json
+│   └── tsconfig.json
+└── README.md 
