@@ -50,42 +50,63 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
         logger.info(f"WebSocket connection accepted for session {session_id}")
         
         while True:
-            # Wait for messages from the client
-            logger.info("Waiting for message from client...")
-            data = await websocket.receive_text()
-            message_data = json.loads(data)
-            logger.info(f"Received message: {message_data}")
-            
-            # Create ChatMessage from the received data
-            message = ChatMessage(
-                role="user",
-                content=message_data["content"],
-                timestamp=message_data.get("timestamp", None)
-            )
-            
-            # Process the message and stream responses
-            await agent_service.add_message_stream(session_id, message, websocket)
-            
+            try:
+                # Wait for messages from the client
+                logger.info("Waiting for message from client...")
+                data = await websocket.receive_text()
+                message_data = json.loads(data)
+                logger.info(f"Received message: {message_data}")
+                
+                # Create ChatMessage from the received data
+                message = ChatMessage(
+                    role="user",
+                    content=message_data["content"],
+                    timestamp=message_data.get("timestamp", None)
+                )
+                
+                # Process the message and stream responses
+                await agent_service.add_message_stream(session_id, message, websocket)
+                
+            except WebSocketDisconnect:
+                logger.info(f"Client disconnected from session {session_id}")
+                break
+            except json.JSONDecodeError as e:
+                logger.error(f"Invalid message format: {str(e)}")
+                if connection_open:
+                    await websocket.send_json({
+                        "type": "error",
+                        "error": "Invalid message format"
+                    })
+            except Exception as e:
+                logger.error(f"Error processing message: {str(e)}")
+                logger.error(traceback.format_exc())
+                if connection_open:
+                    try:
+                        await websocket.send_json({
+                            "type": "error",
+                            "error": str(e)
+                        })
+                    except Exception:
+                        break  # If we can't send error message, exit the loop
+                break  # Exit the loop on error
+                
     except WebSocketDisconnect:
-        logger.info(f"WebSocket disconnected for session {session_id}")
+        logger.info(f"Client disconnected from session {session_id}")
     except Exception as e:
         logger.error(f"WebSocket error: {str(e)}")
         logger.error(traceback.format_exc())
-        if connection_open:
-            try:
-                await websocket.send_json({
-                    "type": "error",
-                    "error": str(e)
-                })
-            except Exception as send_error:
-                logger.error(f"Error sending error message: {str(send_error)}")
     finally:
+        # Only try to close if we successfully opened the connection
         if connection_open:
-            logger.info(f"Closing WebSocket connection for session {session_id}")
             try:
                 await websocket.close()
-            except Exception as close_error:
-                logger.error(f"Error closing WebSocket: {str(close_error)}")
+                logger.info(f"WebSocket connection closed for session {session_id}")
+            except RuntimeError as e:
+                # Ignore "Already closed" errors
+                if "already closed" not in str(e).lower():
+                    logger.error(f"Error during connection cleanup: {str(e)}")
+            except Exception as e:
+                logger.error(f"Error during connection cleanup: {str(e)}")
 
 @router.get("/sessions/{session_id}", response_model=ChatSession)
 async def get_session(session_id: UUID):

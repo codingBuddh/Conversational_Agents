@@ -2,23 +2,34 @@ import { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   Box,
-  Container,
-  Stack,
   Input,
   Button,
   Text,
   useToast,
   Flex,
-  Avatar,
+  Image,
+  VStack,
+  Container,
 } from '@chakra-ui/react';
 import { getSession } from '../services/api';
 import { ChatSession, ChatMessage } from '../types/api';
 import { ChatWebSocket } from '../services/websocket';
 
+// Character images
+const boy1Image = '/boy1.jpg';  // Joe's image
+const boy2Image = '/boy2.jpg';  // Cathy's image
+
 interface StreamingMessage {
   agentName: string;
   content: string;
   isComplete: boolean;
+}
+
+interface ConversationMessage {
+  agentName?: string;
+  content: string;
+  isComplete: boolean;
+  timestamp: string;
 }
 
 function ChatPage() {
@@ -150,103 +161,175 @@ function ChatPage() {
     }
   };
 
-  const getMessageColor = (role: string, agentName?: string) => {
-    if (role === 'user') return 'blue';
-    if (agentName === 'Cathy') return 'pink';
-    if (agentName === 'Joe') return 'green';
-    return 'gray';
+  // Combine completed and streaming messages
+  const getAllMessages = (): ConversationMessage[] => {
+    const completed = (session?.messages || []).map(msg => ({
+      agentName: msg.agent_name,
+      content: msg.content,
+      isComplete: true,
+      timestamp: msg.timestamp
+    }));
+
+    const streaming = streamingMessages.map(msg => ({
+      agentName: msg.agentName,
+      content: msg.content,
+      isComplete: msg.isComplete,
+      timestamp: new Date().toISOString()
+    }));
+
+    return [...completed, ...streaming].sort((a, b) => 
+      new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+    );
   };
 
   return (
-    <Container maxW="container.lg" py={8}>
-      <Stack spacing={4} height="calc(100vh - 100px)">
-        <Box flex="1" overflowY="auto" bg="white" p={4} borderRadius="md" boxShadow="sm">
-          {/* Completed messages */}
-          {session?.messages.map((msg, index) => (
-            <Box
-              key={index}
-              mb={4}
-              p={3}
-              bg={`${getMessageColor(msg.role, msg.agent_name)}.50`}
-              borderRadius="md"
-              ml={msg.role === 'user' ? 'auto' : 0}
-              mr={msg.role === 'assistant' ? 'auto' : 0}
-              maxW="80%"
-            >
-              <Flex align="center" mb={2}>
-                <Avatar 
-                  size="sm" 
-                  name={msg.agent_name || 'You'} 
-                  bg={`${getMessageColor(msg.role, msg.agent_name)}.500`}
-                  mr={2}
-                />
-                <Text fontWeight="bold" color={`${getMessageColor(msg.role, msg.agent_name)}.600`}>
-                  {msg.agent_name || 'You'}
-                </Text>
-              </Flex>
-              <Text>{msg.content}</Text>
-              <Text fontSize="xs" color="gray.500" mt={1}>
-                {new Date(msg.timestamp).toLocaleTimeString()}
-              </Text>
-            </Box>
-          ))}
+    <Box minH="100vh" bg="white" position="relative">
+      {/* Character Images */}
+      <Box position="fixed" bottom={0} left={0} width="350px" height="400px" zIndex={1}>
+        <Image
+          src={boy1Image}
+          alt="Joe"
+          w="100%"
+          h="100%"
+          objectFit="contain"
+          opacity={1}
+        />
+      </Box>
+      <Box position="fixed" bottom={0} right={0} width="350px" height="400px" zIndex={1}>
+        <Image
+          src={boy2Image}
+          alt="Cathy"
+          w="100%"
+          h="100%"
+          objectFit="contain"
+          opacity={1}
+        />
+      </Box>
 
-          {/* Streaming messages */}
-          {streamingMessages.map((msg, index) => (
-            <Box
-              key={`streaming-${index}`}
-              mb={4}
-              p={3}
-              bg={`${getMessageColor('assistant', msg.agentName)}.50`}
-              borderRadius="md"
-              mr="auto"
-              maxW="80%"
-              opacity={msg.isComplete ? 1 : 0.7}
+      {/* Main Content */}
+      <Container maxW="container.xl" py={8} px={4}>
+        <Flex gap={6} justify="center">
+          {/* Conversation Area */}
+          <Box 
+            bg="white" 
+            p={6} 
+            borderRadius="xl" 
+            boxShadow="sm"
+            minH="calc(100vh - 200px)"
+            maxH="calc(100vh - 200px)"
+            overflowY="auto"
+            mb={8}
+            width="500px"
+            ml="200px"  // Add margin to avoid overlap with Joe's image
+          >
+            <VStack spacing={6} align="stretch">
+              {getAllMessages().map((msg, index) => (
+                msg.agentName && (
+                  <Flex
+                    key={index}
+                    justify={msg.agentName === 'Joe' ? 'flex-start' : 'flex-end'}
+                    position="relative"
+                    maxW="80%"
+                    ml={msg.agentName === 'Joe' ? '0' : 'auto'}
+                    mr={msg.agentName === 'Cathy' ? '0' : 'auto'}
+                  >
+                    <Box
+                      bg={msg.agentName === 'Joe' ? 'yellow.50' : 'purple.50'}
+                      p={4}
+                      borderRadius="xl"
+                      borderTopLeftRadius={msg.agentName === 'Joe' ? 0 : undefined}
+                      borderTopRightRadius={msg.agentName === 'Cathy' ? 0 : undefined}
+                      width="100%"
+                      boxShadow="sm"
+                    >
+                      <Text fontSize="md">{msg.content}</Text>
+                      {!msg.isComplete && (
+                        <Text fontSize="sm" color={msg.agentName === 'Joe' ? 'yellow.600' : 'purple.600'}>
+                          typing...
+                        </Text>
+                      )}
+                    </Box>
+                  </Flex>
+                )
+              ))}
+              <div ref={messagesEndRef} />
+            </VStack>
+          </Box>
+
+          {/* User Messages Area */}
+          <Box
+            width="300px"
+            bg="white"
+            p={6}
+            borderRadius="xl"
+            boxShadow="sm"
+            minH="calc(100vh - 200px)"
+            maxH="calc(100vh - 200px)"
+            overflowY="auto"
+            mb={8}
+          >
+            <Text fontSize="lg" fontWeight="bold" mb={4}>Your Messages</Text>
+            <VStack spacing={4} align="stretch">
+              {getAllMessages().map((msg, index) => (
+                !msg.agentName && (
+                  <Box
+                    key={index}
+                    bg="blue.50"
+                    p={4}
+                    borderRadius="xl"
+                    boxShadow="sm"
+                  >
+                    <Text fontSize="md">{msg.content}</Text>
+                  </Box>
+                )
+              ))}
+            </VStack>
+          </Box>
+        </Flex>
+
+        {/* Input Area */}
+        <Box 
+          position="fixed" 
+          bottom={0} 
+          left="350px"  // Adjusted for larger character image
+          right="350px"  // Adjusted for larger character image
+          p={6} 
+          bg="white" 
+          boxShadow="0 -4px 6px -1px rgba(0, 0, 0, 0.1)"
+          zIndex={2}
+        >
+          <Flex maxW="600px" mx="auto">  {/* Reduced max width */}
+            <Input
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              placeholder="Give them a topic to discuss..."
+              size="lg"
+              bg="white"
+              mr={4}
+              borderRadius="xl"
+              onKeyPress={(e) => {
+                if (e.key === 'Enter' && !isLoading) {
+                  handleSendMessage();
+                }
+              }}
+            />
+            <Button
+              colorScheme="blue"
+              onClick={handleSendMessage}
+              isLoading={isLoading}
+              size="lg"
+              borderRadius="xl"
+              px={8}
             >
-              <Flex align="center" mb={2}>
-                <Avatar 
-                  size="sm" 
-                  name={msg.agentName} 
-                  bg={`${getMessageColor('assistant', msg.agentName)}.500`}
-                  mr={2}
-                />
-                <Text fontWeight="bold" color={`${getMessageColor('assistant', msg.agentName)}.600`}>
-                  {msg.agentName}
-                </Text>
-              </Flex>
-              <Text>{msg.content}</Text>
-              {!msg.isComplete && (
-                <Text fontSize="xs" color="gray.500" mt={1}>
-                  Typing...
-                </Text>
-              )}
-            </Box>
-          ))}
-          <div ref={messagesEndRef} />
+              Send
+            </Button>
+          </Flex>
         </Box>
 
-        <Flex>
-          <Input
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            placeholder="Type your message..."
-            mr={2}
-            onKeyPress={(e) => {
-              if (e.key === 'Enter' && !isLoading) {
-                handleSendMessage();
-              }
-            }}
-          />
-          <Button
-            colorScheme="blue"
-            onClick={handleSendMessage}
-            disabled={isLoading}
-          >
-            Send
-          </Button>
-        </Flex>
-      </Stack>
-    </Container>
+        {/* Spacer for fixed bottom input */}
+        <Box h="100px" />
+      </Container>
+    </Box>
   );
 }
 
