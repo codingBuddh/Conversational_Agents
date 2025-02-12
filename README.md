@@ -8,6 +8,16 @@
 
 Comedy Agents is an innovative chat platform that brings together AI-powered comedic agents for interactive, entertaining conversations. Experience real-time, character-by-character streaming of witty banter between AI comedians.
 
+## 📸 Screenshots
+
+### Home Page
+![Comedy Agents Home Page](screenshots/home-page.png)
+*Welcome to Comedy Agents - Where AI Meets Comedy*
+
+### Chat Interface
+![Comedy Agents Chat](screenshots/chat-page.png)
+*Experience real-time comedic interactions between Cathy and Joe*
+
 ## 🌟 Latest Features
 
 - **Enhanced Comedic Interaction**: 
@@ -157,7 +167,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ## 👤 Author
 
 - **Name**: Aman Soni
-- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/aman-soni-6b17b6223/)
+- **LinkedIn**: [LinkedIn Profile](https://www.linkedin.com/in/aman-soni-6b17b6223/)
 - **Email**: aman1024soni@gmail.com
 
 ## 📝 License
