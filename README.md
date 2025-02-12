@@ -8,16 +8,36 @@
 
 Comedy Agents is an innovative chat platform that brings together AI-powered comedic agents for interactive, entertaining conversations. Experience real-time, character-by-character streaming of witty banter between AI comedians.
 
-## 🌟 Features
+## 🌟 Latest Features
 
-- **Real-time Comedy Interaction**: Engage with AI comedians in real-time conversations
-- **Character Streaming**: Experience responses character-by-character for natural conversation flow
-- **Multiple Comedy Agents**: Interact with different AI personalities:
-  - Cathy: A witty stand-up comedian
-  - Joe: An improvisational comedy expert
-- **Modern Tech Stack**: Built with FastAPI, React, TypeScript, and OpenAI's GPT models
-- **WebSocket Integration**: Smooth, real-time communication between client and server
-- **Responsive Design**: Beautiful UI that works across devices
+- **Enhanced Comedic Interaction**: 
+  - Continuous back-and-forth conversations between agents
+  - Natural conversation flow until comedic conclusion
+  - Dynamic callbacks and running gags
+  - Improved character personalities and humor styles
+
+- **Advanced AI Integration**:
+  - GPT-4 powered responses for superior humor
+  - Real-time character streaming for natural conversation flow
+  - Context-aware callbacks and references
+  - Memory of previous jokes and interactions
+
+- **Character Personalities**:
+  - **Cathy**: Quick-witted stand-up comedian with perfect timing
+    - Specializes in observational humor and clever wordplay
+    - Channels Ellen DeGeneres meets Jerry Seinfeld style
+    - Masters unexpected punchlines and running gags
+
+  - **Joe**: Improv comedy genius with perfect callbacks
+    - Combines Ryan Reynolds and Robin Williams style humor
+    - Expert at "Yes, and..." technique
+    - Creates evolving running gags and clever callbacks
+
+- **Technical Improvements**:
+  - Optimized response streaming
+  - Enhanced conversation state management
+  - Improved error handling
+  - Better memory context utilization
 
 ## 🚀 Getting Started
 
@@ -71,6 +91,25 @@ Comedy Agents is an innovative chat platform that brings together AI-powered com
    npm run dev
    ```
 
+## 🎭 Using the Platform
+
+1. **Start a Conversation**:
+   - Click "Start Chatting" on the homepage
+   - Enter a topic or question to begin
+   - Watch as Cathy and Joe engage in witty banter
+
+2. **Interaction Features**:
+   - Real-time character-by-character responses
+   - Natural conversation flow
+   - Dynamic callbacks to previous jokes
+   - Continuous dialogue until natural conclusion
+
+3. **Conversation Flow**:
+   - Agents respond to each other naturally
+   - Build running gags and callbacks
+   - Maintain context and reference previous jokes
+   - End conversations naturally when humor peaks
+
 ## 🏗️ Project Structure
 
 ```
@@ -98,45 +137,28 @@ comedy-agents/
 ### Backend Architecture
 
 - **FastAPI**: High-performance async web framework
-- **WebSocket**: Real-time communication for streaming responses
-- **OpenAI Integration**: GPT-3.5-turbo for generating comedic responses
-- **Pydantic Models**: Type-safe data validation
-- **Async/Await**: Non-blocking I/O operations
+- **WebSocket**: Real-time streaming responses
+- **GPT-4 Integration**: Advanced language model for humor
+- **Conversation Management**: Stateful session handling
+- **Memory System**: Context-aware joke callbacks
 
 ### Frontend Architecture
 
-- **React**: Component-based UI library
-- **TypeScript**: Type-safe JavaScript
-- **Chakra UI**: Modern component library
-- **WebSocket Client**: Real-time message streaming
-- **React Router**: Client-side routing
-
-## 🎯 Key Features Explained
-
-### 1. Real-time Character Streaming
-- WebSocket connection for instant response streaming
-- Character-by-character display for natural conversation flow
-- Visual typing indicators for active agents
-
-### 2. AI Comedy Agents
-- Distinct personality profiles for each agent
-- Context-aware responses with callback humor
-- Memory of previous interactions for contextual comedy
-
-### 3. Modern UI/UX
-- Responsive design for all devices
-- Smooth animations and transitions
-- Clear visual hierarchy and user feedback
+- **React**: Modern component-based UI
+- **TypeScript**: Type-safe development
+- **Chakra UI**: Polished component library
+- **WebSocket Client**: Real-time updates
+- **State Management**: Efficient conversation handling
 
 ## 🤝 Contributing
 
 We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
+## 👤 Author
+
+- **Name**: Aman Soni
+- **LinkedIn**: [Your LinkedIn Profile](https://www.linkedin.com/in/aman-soni-6b17b6223/)
+- **Email**: aman1024soni@gmail.com
 
 ## 📝 License
 
@@ -144,15 +166,10 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- OpenAI for their powerful GPT models
-- FastAPI for the excellent web framework
-- React team for the frontend framework
-- All contributors and supporters
-
-## 📬 Contact
-
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Project Link: [https://github.com/yourusername/comedy-agents](https://github.com/yourusername/comedy-agents)
+- OpenAI for GPT-4
+- FastAPI team
+- React community
+- All contributors
 
 ---
 
